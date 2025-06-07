@@ -1,485 +1,351 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hospital Appointment Form</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #e8f4f8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background-image: radial-gradient(circle at 10% 20%, rgba(144, 207, 234, 0.3) 10%, rgba(220, 237, 247, 0.4) 70%);
-        }
-        
-        .container {
-            display: flex;
-            max-width: 1000px;
-            width: 100%;
-            margin: 30px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        
-        .info-section {
-            color: white;
-            padding: 40px;
-            flex: 1;
-            background: linear-gradient(135deg, #42a5f5, #2979ff);
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .info-section::before {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: repeating-linear-gradient(
-                45deg,
-                rgba(255, 255, 255, 0.05),
-                rgba(255, 255, 255, 0.05) 10px,
-                transparent 10px,
-                transparent 20px
-            );
-            animation: backgroundMove 30s linear infinite;
-            z-index: 1;
-        }
-        
-        @keyframes backgroundMove {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
-        }
-        
-        .info-section h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
-            line-height: 1.2;
-            position: relative;
-            z-index: 2;
-            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-        
-        .info-box {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 20px;
-            border-radius: 8px;
-            position: relative;
-            z-index: 2;
-            backdrop-filter: blur(5px);
-        }
-        
-        .info-box p {
-            margin: 10px 0;
-            font-size: 16px;
-            line-height: 1.5;
-        }
-        
-        .form-section {
-            background-color: white;
-            padding: 30px;
-            width: 400px;
-            position: relative;
-        }
-        
-        .form-section::after {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 5px;
-            height: 100%;
-            background: linear-gradient(to bottom, #42a5f5, #2979ff);
-        }
-        
-        .form-section h2 {
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: #2979ff;
-            font-size: 24px;
-            position: relative;
-            padding-bottom: 10px;
-        }
-        
-        .form-section h2::after {
-            content: "";
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(to right, #42a5f5, #2979ff);
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-            position: relative;
-        }
-        
-        .form-control {
-            width: 100%;
-            padding: 12px 15px;
-            border: none;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 14px;
-            background-color: #f5f8fa;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-        }
-        
-        .textarea-control {
-            height: 100px;
-            resize: none;
-        }
-        
-        .form-control:focus {
-            outline: none;
-            background-color: #fff;
-            box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.3);
-        }
-        
-        .form-control::placeholder {
-            color: #95a5a6;
-        }
-        
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
-            color: #2c3e50;
-        }
-        
-        .address-section-title {
-            font-weight: 500;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-size: 16px;
-            position: relative;
-            display: inline-block;
-        }
-        
-        .address-section-title::after {
-            content: "";
-            position: absolute;
-            bottom: -5px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(to right, #42a5f5, transparent);
-        }
-        
-        .btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, #42a5f5, #2979ff);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(66, 165, 245, 0.3);
-        }
-        
-        .btn-primary:hover {
-            background: linear-gradient(to right, #2979ff, #1e88e5);
-            box-shadow: 0 6px 10px rgba(66, 165, 245, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        .btn-primary:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
-        
-        .btn-back {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(to right, #ff6f61, #ff8a80);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 6px rgba(255, 111, 97, 0.3);
-            margin-top: 10px;
-        }
-        
-        .btn-back:hover {
-            background: linear-gradient(to right, #ff8a80, #ff6f61);
-            box-shadow: 0 6px 10px rgba(255, 111, 97, 0.4);
-            transform: translateY(-2px);
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                margin: 15px;
-            }
-            
-            .form-section {
-                width: 100%;
-            }
-            
-            .form-section::after {
-                width: 100%;
-                height: 5px;
-                top: 0;
-                right: unset;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Departments</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Arial', sans-serif;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f0f7ff 0%, #e6f0fd 100%);
+      color: #333;
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+    }
+    
+    .bg-shape-1 {
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(43, 119, 229, 0.1) 0%, rgba(43, 119, 229, 0.05) 70%, transparent 100%);
+      z-index: 0;
+    }
+    
+    .bg-shape-2 {
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 400px;
+      height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(102, 145, 204, 0.08) 0%, rgba(102, 145, 204, 0.03) 70%, transparent 100%);
+      z-index: 0;
+    }
+    
+    .wave-pattern {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 300px;
+      background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%23e1ebfa' fill-opacity='0.6' d='M0,128L48,138.7C96,149,192,171,288,160C384,149,480,107,576,112C672,117,768,171,864,186.7C960,203,1056,181,1152,154.7C1248,128,1344,96,1392,80L1440,64L1440,0L1392,0C1344,0,1248,0,1152,0C1056,0,960,0,864,0C768,0,672,0,576,0C480,0,384,0,288,0C192,0,96,0,48,0L0,0Z'%3E%3C/path%3E%3C/svg%3E") no-repeat;
+      background-size: cover;
+      z-index: 0;
+      transform: rotate(180deg);
+      opacity: 0.8;
+    }
+    
+    .container {
+      max-width: 850px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    header {
+      text-align: center;
+      padding: 35px 0;
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(10px);
+      border-radius: 16px;
+      margin-bottom: 40px;
+      box-shadow: 0 8px 30px rgba(43, 119, 229, 0.12);
+      border-top: 4px solid #2b77e5;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    header::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      transform: translateX(-100%);
+      animation: shimmer 3s infinite;
+      z-index: 0;
+    }
+    
+    @keyframes shimmer {
+      100% {
+        transform: translateX(100%);
+      }
+    }
+    
+    h1 {
+      color: #2b77e5;
+      font-size: 2.4rem;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    
+    h2 {
+      color: #6691cc;
+      font-size: 1.4rem;
+      font-weight: normal;
+      position: relative;
+    }
+    
+    .menu-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+    }
+    
+    .menu-item {
+      background: white;
+      border-radius: 16px;
+      padding: 30px 20px;
+      text-align: center;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      transition: transform 0.3s, box-shadow 0.3s;
+      border: 1px solid #e6eef9;
+      position: relative;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    
+    .menu-item::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(90deg, #2b77e5, #6691cc);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease-out;
+    }
+    
+    .menu-item:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 12px 30px rgba(43, 119, 229, 0.15);
+      border-color: #c9dbf5;
+    }
+    
+    .menu-item:hover::before {
+      transform: scaleX(1);
+    }
+    
+    .icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #edf4ff 0%, #dce9fc 100%);
+      border-radius: 50%;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(43, 119, 229, 0.1);
+      transition: transform 0.3s;
+    }
+    
+    .menu-item:hover .icon {
+      transform: scale(1.1);
+    }
+    
+    .icon svg {
+      width: 40px;
+      height: 40px;
+      fill: none;
+      stroke: #2b77e5;
+      stroke-width: 2;
+    }
+    
+    .menu-title {
+      font-size: 1.2rem;
+      color: #444;
+      font-weight: 500;
+      margin-top: 5px;
+    }
+    
+    @media (max-width: 600px) {
+      .menu-grid {
+        grid-template-columns: repeat(1, 1fr);
+      }
+      
+      h1 {
+        font-size: 1.9rem;
+      }
+      
+      h2 {
+        font-size: 1.2rem;
+      }
+      
+      .container {
+        padding: 20px 15px;
+      }
+      
+      header {
+        padding: 25px 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="info-section">
-            <h1 id="department-name">Department</h1>
-            <div class="info-box">
-                <p id="department-info">Loading department information...</p>
-            </div>
-        </div>
-        <div class="form-section">
-            <h2>Book Your Appointment</h2>
-            <form id="appointment-form">
-                <div class="form-group">
-                    <input type="text" class="form-control" placeholder="Enter Full name" required>
-                </div>
-                <div class="form-group">
-                    <input type="tel" class="form-control" placeholder="Enter Mobile Number" required>
-                </div>
-                <div class="form-group">
-                    <input type="number" class="form-control" placeholder="Enter Age" min="0" max="120" required>
-                </div>
-                
-                <div class="form-group">
-                    <div class="address-section-title">Address Details</div>
-                    <textarea class="form-control textarea-control" placeholder="Enter your complete address"></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <button type="submit" class="btn-primary" id="submit-btn">Book Appointment</button>
-                </div>
-                <div class="form-group">
-                    <button type="button" class="btn-back" id="back-btn">Back to Departments</button>
-                </div>
-            </form>
-        </div>
+  <div class="bg-shape-1"></div>
+  <div class="bg-shape-2"></div>
+  <div class="wave-pattern"></div>
+  
+  <div class="container">
+    <a href="index.html" style="display: inline-block; margin-bottom: 20px; color: #2b77e5; text-decoration: none;">← Back to Home</a>
+    <header>
+      <h1>Departments</h1>
+      <h2>Schedule your Visit</h2>
+    </header>
+    
+    <div id="departments-container" class="menu-grid">
+      <!-- Departments will be loaded here dynamically -->
     </div>
 
-    <script>
-        const API_URL = 'https://slotnow-br3f.onrender.com/api';
+    <div id="error-message" style="display: none; text-align: center; padding: 20px; background: #fff3f3; border-radius: 8px; margin-top: 20px; color: #d32f2f;">
+      Failed to load departments. Please try again.
+    </div>
+  </div>
 
-        // Function to get URL parameters
-        function getUrlParameter(name) {
-            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
-            const results = regex.exec(location.search);
-            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  <script>
+    // Function to create department card
+    function createDepartmentCard(department) {
+      return `
+        <a href="patient-form.html?dept=${encodeURIComponent(department.name)}" class="menu-item">
+          <div class="icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M12 8a3 3 0 0 0-3 3m0 0a3 3 0 0 0 3 3m0 0a3 3 0 0 0 3-3m0 0a3 3 0 0 0-3-3" />
+              <path d="M3 12h3m15 0h-3m-7.5-6v3m0 6v3" />
+              <path d="M12 3c7.2 0 9 1.8 9 9s-1.8 9-9 9s-9-1.8-9-9s1.8-9 9-9z" />
+            </svg>
+          </div>
+          <div class="menu-title">${department.name}</div>
+          <div style="font-size: 0.9rem; color: #666; margin-top: 8px;">
+            Available Slots: ${department.availableSlots || 0}
+          </div>
+        </a>
+      `;
+    }
+
+    // Function to show error message
+    function showError(message) {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.textContent = message;
+      errorDiv.style.display = 'block';
+      console.error('Error:', message);
+    }
+
+    // Function to hide error message
+    function hideError() {
+      const errorDiv = document.getElementById('error-message');
+      errorDiv.style.display = 'none';
+    }
+
+    // Function to get API URL
+    function getApiUrl() {
+      // Check if we're on Render
+      if (window.location.hostname.includes('render.com')) {
+        return 'https://slotnow-i8fs.onrender.com/api';
+      }
+      // Check if we're on localhost
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api';
+      }
+      // Default to relative path
+      return '/api';
+    }
+
+    // Function to load departments
+    async function loadDepartments() {
+      try {
+        hideError();
+        console.log('Attempting to fetch departments...');
+        
+        const apiUrl = getApiUrl();
+        console.log('API URL:', `${apiUrl}/departments`);
+        
+        // First try to check if the API is accessible
+        try {
+          const healthCheck = await fetch(`${apiUrl}/health`);
+          if (!healthCheck.ok) {
+            throw new Error('API health check failed');
+          }
+          console.log('API health check passed');
+        } catch (error) {
+          console.error('API health check failed:', error);
+          throw new Error('API server is not responding. Please try again later.');
         }
-
-        // Function to show error message
-        function showError(message) {
-            const infoBox = document.querySelector('.info-box');
-            infoBox.innerHTML = `<p style="color: #d32f2f;">${message}</p>`;
-        }
-
-        // Function to update department info
-        function updateDepartmentInfo(department) {
-            document.getElementById('department-name').textContent = department.name;
-            const infoBox = document.querySelector('.info-box');
-            infoBox.innerHTML = `
-                <p>Available Slots: ${department.availableSlots || 0}</p>
-                <p>Next Available Date: ${department.nextAvailableDate || 'Not scheduled'}</p>
-            `;
-        }
-
-        // Function to load department details
-        async function loadDepartmentDetails() {
-            const departmentName = getUrlParameter('dept');
-            if (!departmentName) {
-                showError('No department selected. Please go back and select a department.');
-                return;
-            }
-
-            try {
-                const response = await fetch(`${API_URL}/departments/${encodeURIComponent(departmentName)}`);
-                const result = await response.json();
-
-                if (!result.success) {
-                    throw new Error(result.message || 'Failed to load department details');
-                }
-
-                updateDepartmentInfo(result.data);
-            } catch (error) {
-                console.error('Error loading department details:', error);
-                showError(error.message || 'Failed to load department details. Please try again.');
-            }
-        }
-
-        // Load department details when page loads
-        document.addEventListener('DOMContentLoaded', loadDepartmentDetails);
-
-        // Handle form submission
-        document.getElementById('appointment-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            // Add your form submission logic here
+        
+        const response = await fetch(`${apiUrl}/departments`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
         });
+        
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        console.log('Response data:', result);
 
-        // Helper function to get day number (0-6)
-        function getDayNumber(dayName) {
-            const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
-            return days.indexOf(dayName.toUpperCase());
+        if (!result.success) {
+          throw new Error(result.message || 'Failed to load departments');
         }
 
-        // Helper function to get next week's specific day
-        function getNextWeekDay(date, targetDay) {
-            const resultDate = new Date(date);
-            resultDate.setDate(date.getDate() + (7 - date.getDay() + targetDay) % 7);
-            if (resultDate <= date) {
-                resultDate.setDate(resultDate.getDate() + 7);
-            }
-            return resultDate;
+        const departmentsContainer = document.getElementById('departments-container');
+        departmentsContainer.innerHTML = result.data.map(dept => createDepartmentCard(dept)).join('');
+        
+        console.log('Departments loaded successfully');
+      } catch (error) {
+        console.error('Error loading departments:', error);
+        let errorMessage = 'Failed to load departments';
+        
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = 'Unable to connect to the server. Please check your internet connection and try again.';
+        } else if (error.message.includes('API server is not responding')) {
+          errorMessage = 'The server is currently unavailable. Please try again later.';
+        } else {
+          errorMessage = error.message;
         }
+        
+        showError(errorMessage);
+      }
+    }
 
-        // Form validation functions
-        function validateName(name) {
-            return /^[A-Za-z\s]+$/.test(name);
-        }
-
-        function validateMobile(mobile) {
-            return /^\d{10}$/.test(mobile);
-        }
-
-        function validateAge(age) {
-            return /^\d{1,2}$/.test(age) && parseInt(age) > 0;
-        }
-
-        // Handle form submission
-        document.getElementById('appointment-form').addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
-            const submitBtn = document.getElementById('submit-btn');
-            if (submitBtn.disabled) return;
-
-            const name = this.querySelector('input[type="text"]').value.trim();
-            const mobile = this.querySelector('input[type="tel"]').value.trim();
-            const age = this.querySelector('input[type="number"]').value.trim();
-            const address = this.querySelector('textarea').value.trim();
-
-            // Validate all fields are filled
-            if (!name || !mobile || !age || !address) {
-                alert('Please fill in all the details');
-                return;
-            }
-
-            // Validate name (only alphabets)
-            if (!validateName(name)) {
-                alert('Name should contain only alphabets');
-                return;
-            }
-
-            // Validate mobile (10 digits)
-            if (!validateMobile(mobile)) {
-                alert('Mobile number should be 10 digits');
-                return;
-            }
-
-            // Validate age (1-2 digits)
-            if (!validateAge(age)) {
-                alert('Age should be a valid number (1-99)');
-                return;
-            }
-
-            try {
-                // Check for duplicate booking
-                console.log('Checking for duplicate booking...');
-                const duplicateResponse = await fetch(`${API_URL}/bookings/check-duplicate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ mobile, department: document.getElementById('department-name').textContent })
-                });
-
-                if (!duplicateResponse.ok) {
-                    throw new Error('Failed to check duplicate booking');
-                }
-
-                const isDuplicate = await duplicateResponse.json();
-                console.log('Duplicate check result:', isDuplicate);
-
-                if (isDuplicate.exists) {
-                    alert('Appointment is already booked for this number in this department');
-                    return;
-                }
-
-                const formData = {
-                    department: document.getElementById('department-name').textContent,
-                    name,
-                    mobile,
-                    age: parseInt(age),
-                    address,
-                    appointmentDate: document.getElementById('department-info').textContent.split(': ')[1]
-                };
-
-                console.log('Submitting booking data:', formData);
-                const response = await fetch(`${API_URL}/bookings`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                console.log('Response status:', response.status);
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Failed to book appointment');
-                }
-
-                const booking = await response.json();
-                console.log('Booking successful:', booking);
-                alert('Appointment is Confirmed');
-                this.reset();
-                loadDepartmentDetails(); // Refresh department details
-            } catch (error) {
-                console.error('Booking error:', error);
-                alert(error.message || 'Error booking appointment. Please try again.');
-            }
-        });
-
-        // Add input validation for name (only alphabets)
-        document.querySelector('input[type="text"]').addEventListener('input', function(e) {
-            this.value = this.value.replace(/[^A-Za-z\s]/g, '');
-        });
-
-        // Add input validation for mobile (only numbers, max 10 digits)
-        document.querySelector('input[type="tel"]').addEventListener('input', function(e) {
-            this.value = this.value.replace(/\D/g, '').slice(0, 10);
-        });
-
-        // Add input validation for age (only numbers, max 2 digits)
-        document.querySelector('input[type="number"]').addEventListener('input', function(e) {
-            this.value = this.value.replace(/\D/g, '').slice(0, 2);
-        });
-
-        // Handle back button
-        document.getElementById('back-btn').addEventListener('click', function() {
-            window.location.href = 'departments.html';
-        });
-    </script>
+    // Load departments when page loads
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Page loaded, initializing...');
+      loadDepartments();
+    });
+  </script>
 </body>
 </html>
