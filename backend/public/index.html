@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Your Doctor Appointment Online</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            filter: drop-shadow(0 0 2px rgba(37, 99, 235, 0.4));
+        }
+        
+        .logo-text {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 28px;
+            color: #2563eb;
+            letter-spacing: 0.5px;
+            background: linear-gradient(90deg, #2563eb, #1e40af);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 3px rgba(37, 99, 235, 0.5), 
+                         0 0 7px rgba(37, 99, 235, 0.3);
+        }
+        
+        .login-btn {
+            background-color: #2563eb;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .login-btn:hover {
+            background-color: #1e40af;
+            transform: translateY(-2px);
+        }
+        
+        .hero {
+            display: flex;
+            padding: 50px;
+            background-color: #2563eb;
+            color: white;
+            align-items: center;
+            min-height: 450px;
+        }
+        
+        .hero-content {
+            flex: 1;
+            padding-right: 50px;
+        }
+        
+        .hero-content h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            font-weight: 700;
+        }
+        
+        .hero-content p {
+            font-size: 18px;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            opacity: 0.9;
+        }
+        
+        .hero-image {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background-color: white;
+            color: #2563eb;
+            border-radius: 5px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #f8fafc;
+        }
+        .hospital-icon {
+        max-width: 150px;
+        height: 250px;
+        border-radius: 10px;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-container">
+            <svg class="logo-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <g fill="#2563eb">
+                    <path d="M398.6,190.3c-14.1,0-27,5.4-36.8,14.1c-9.7,8.6-16.2,20.5-17.8,34.1l-0.5,5.4v61.6c0,21.1-8.1,40.5-22.7,55.1 c-14.6,14.6-34,22.7-55.1,22.7c-21.1,0-40.5-8.1-55.1-22.7c-14.6-14.6-22.7-34-22.7-55.1v-83.2c28.6-5.9,52.4-25.9,62.7-53.2 c2.7-7,4.1-14.3,4.1-21.6v-29.7c0-7.3-5.9-13.2-13.2-13.2h-10.8c-7.3,0-13.2,5.9-13.2,13.2v29.7c0,17.8-14.6,32.4-32.4,32.4 s-32.4-14.6-32.4-32.4v-29.7c0-7.3-5.9-13.2-13.2-13.2h-10.8c-7.3,0-13.2,5.9-13.2,13.2v29.7c0,7.3,1.4,14.6,4.1,21.6 c10.3,27.3,34,47.3,62.7,53.2v83.2c0,28.6,11.4,55.1,31.3,75.1c20,20,46.5,31.3,75.1,31.3c28.6,0,55.1-11.4,75.1-31.3 c20-20,31.3-46.5,31.3-75.1v-57.5c0-7,5.9-13.2,13.2-13.2c7.3,0,13.2,5.9,13.2,13.2v8.1c0,18.4,14.9,33.2,33.2,33.2 c18.4,0,33.2-14.9,33.2-33.2v-42.2C431.9,205.2,417,190.3,398.6,190.3z"/>
+                    <circle cx="398.6" cy="237.3" r="18.4"/>
+                </g>
+            </svg>
+            <div class="logo-text">Slotnow</div>
+        </div>
+        <a href="admin-login.html" class="login-btn">Admin</a>
+    </nav>
+    
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Book Your Doctor Appointment Online.</h1>
+            <p>Book Your Appointments on Slotnow Today!</p>
+            <a href="departments.html" class="btn">Book My Appointment</a>
+        </div>
+        <div class="hero-image">
+            <img src="./icon.png"alt="Hospital icon" class="hospital-icon">
+        </div>
+    </section>
+</body>
+</html>

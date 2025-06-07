@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Appointment Form</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e8f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-image: radial-gradient(circle at 10% 20%, rgba(144, 207, 234, 0.3) 10%, rgba(220, 237, 247, 0.4) 70%);
+        }
+        
+        .container {
+            display: flex;
+            max-width: 1000px;
+            width: 100%;
+            margin: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .info-section {
+            color: white;
+            padding: 40px;
+            flex: 1;
+            background: linear-gradient(135deg, #42a5f5, #2979ff);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .info-section::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(255, 255, 255, 0.05),
+                rgba(255, 255, 255, 0.05) 10px,
+                transparent 10px,
+                transparent 20px
+            );
+            animation: backgroundMove 30s linear infinite;
+            z-index: 1;
+        }
+        
+        @keyframes backgroundMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+        
+        .info-section h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .info-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            position: relative;
+            z-index: 2;
+            backdrop-filter: blur(5px);
+        }
+        
+        .info-box p {
+            margin: 10px 0;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        .form-section {
+            background-color: white;
+            padding: 30px;
+            width: 400px;
+            position: relative;
+        }
+        
+        .form-section::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, #42a5f5, #2979ff);
+        }
+        
+        .form-section h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #2979ff;
+            font-size: 24px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+        
+        .form-section h2::after {
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, #42a5f5, #2979ff);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: none;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 14px;
+            background-color: #f5f8fa;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .textarea-control {
+            height: 100px;
+            resize: none;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            background-color: #fff;
+            box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.3);
+        }
+        
+        .form-control::placeholder {
+            color: #95a5a6;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        .address-section-title {
+            font-weight: 500;
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 16px;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .address-section-title::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(to right, #42a5f5, transparent);
+        }
+        
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #42a5f5, #2979ff);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(66, 165, 245, 0.3);
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(to right, #2979ff, #1e88e5);
+            box-shadow: 0 6px 10px rgba(66, 165, 245, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+        
+        .btn-back {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #ff6f61, #ff8a80);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(255, 111, 97, 0.3);
+            margin-top: 10px;
+        }
+        
+        .btn-back:hover {
+            background: linear-gradient(to right, #ff8a80, #ff6f61);
+            box-shadow: 0 6px 10px rgba(255, 111, 97, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                margin: 15px;
+            }
+            
+            .form-section {
+                width: 100%;
+            }
+            
+            .form-section::after {
+                width: 100%;
+                height: 5px;
+                top: 0;
+                right: unset;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="info-section">
+            <h1 id="department-name">Department</h1>
+            <div class="info-box">
+                <p id="available-day"><strong>Available Day:</strong> Loading...</p>
+                <p id="slots"><strong>Slots Remaining:</strong> Loading...</p>
+                <p id="available-date"><strong>Available Date:</strong> Loading...</p>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h2>Book Appointment</h2>
+            <form id="appointment-form">
+                <div class="form-group">
+                    <input type="text" class="form-control" placeholder="Enter Full name" required>
+                </div>
+                <div class="form-group">
+                    <input type="tel" class="form-control" placeholder="Enter Mobile Number" required>
+                </div>
+                <div class="form-group">
+                    <input type="number" class="form-control" placeholder="Enter Age" min="0" max="120" required>
+                </div>
+                
+                <div class="form-group">
+                    <div class="address-section-title">Address Details</div>
+                    <textarea class="form-control textarea-control" placeholder="Enter your complete address"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <button type="submit" class="btn-primary" id="submit-btn">Book Appointment</button>
+                </div>
+                <div class="form-group">
+                    <button type="button" class="btn-back" id="back-btn">Back to Departments</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+
+        // Get department details from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const deptName = urlParams.get('dept') || 'Department';
+        document.getElementById('department-name').textContent = deptName.replace(/%20/g, ' ');
+
+        // Fetch department details
+        async function fetchDepartmentDetails() {
+            try {
+                const response = await fetch(`${API_URL}/departments/${deptName}`);
+                if (!response.ok) throw new Error('Department not found');
+                
+                const department = await response.json();
+                document.getElementById('available-day').textContent = `Available Day: ${department.availableDay}`;
+                document.getElementById('slots').textContent = `Slots Remaining: ${department.availableSlots}`;
+                
+                // Calculate next available date based on department rules
+                const today = new Date();
+                const currentDay = today.getDay();
+                const targetDay = getDayNumber(department.availableDay);
+                let nextAvailableDate = new Date(today);
+                const submitBtn = document.getElementById('submit-btn');
+
+                // Handle department-specific rules
+                if (department.name === 'Neurosurgeon') {
+                    // Neurosurgeon: Wednesday
+                    if (currentDay === 3) { // Wednesday
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Booking Not Allowed Today';
+                        nextAvailableDate = getNextWeekDay(today, targetDay);
+                    } else {
+                        nextAvailableDate = getNextWeekDay(today, targetDay);
+                    }
+                } else if (department.name === 'Neurophysician') {
+                    // Neurophysician: Friday
+                    if (currentDay === 5) { // Friday
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Booking Not Allowed Today';
+                        nextAvailableDate = getNextWeekDay(today, targetDay);
+                    } else {
+                        nextAvailableDate = getNextWeekDay(today, targetDay);
+                    }
+                } else if (department.name === 'Cardiology') {
+                    // Cardiology: Tuesday
+                    if (currentDay === 2) { // Tuesday
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Booking Not Allowed Today';
+                    }
+                    nextAvailableDate = getNextWeekDay(today, targetDay);
+                } else if (department.name === 'Pediatric Cardiology') {
+                    // Pediatric Cardiology: Friday
+                    if (currentDay === 5) { // Friday
+                        submitBtn.disabled = true;
+                        submitBtn.textContent = 'Booking Not Allowed Today';
+                        nextAvailableDate = getNextWeekDay(today, targetDay);
+                    } else {
+                        nextAvailableDate = getNextWeekDay(today, targetDay);
+                    }
+                }
+
+                const formattedDate = nextAvailableDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                document.getElementById('available-date').textContent = `Available Date: ${formattedDate}`;
+
+                // Disable submit button if no slots available
+                if (department.availableSlots <= 0) {
+                    submitBtn.disabled = true;
+                    submitBtn.textContent = 'Slots are not Available';
+                    
+                    // Calculate time until next available date
+                    const timeUntilNextDate = nextAvailableDate.getTime() - today.getTime();
+                    if (timeUntilNextDate > 0) {
+                        // Reload only after the next available date
+                        setTimeout(fetchDepartmentDetails, timeUntilNextDate);
+                    }
+                } else if (!submitBtn.disabled) {
+                    submitBtn.textContent = 'Book Appointment';
+                }
+            } catch (error) {
+                console.error('Error fetching department details:', error);
+            }
+        }
+
+        // Helper function to get day number (0-6)
+        function getDayNumber(dayName) {
+            const days = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+            return days.indexOf(dayName.toUpperCase());
+        }
+
+        // Helper function to get next week's specific day
+        function getNextWeekDay(date, targetDay) {
+            const resultDate = new Date(date);
+            resultDate.setDate(date.getDate() + (7 - date.getDay() + targetDay) % 7);
+            if (resultDate <= date) {
+                resultDate.setDate(resultDate.getDate() + 7);
+            }
+            return resultDate;
+        }
+
+        // Form validation functions
+        function validateName(name) {
+            return /^[A-Za-z\s]+$/.test(name);
+        }
+
+        function validateMobile(mobile) {
+            return /^\d{10}$/.test(mobile);
+        }
+
+        function validateAge(age) {
+            return /^\d{1,2}$/.test(age) && parseInt(age) > 0;
+        }
+
+        // Check for duplicate bookings
+        async function checkDuplicateBooking(mobile, department) {
+            try {
+                const response = await fetch(`${API_URL}/bookings/check-duplicate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mobile, department })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Error checking duplicate:', error);
+                return false;
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('appointment-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submit-btn');
+            if (submitBtn.disabled) return;
+
+            const name = this.querySelector('input[type="text"]').value.trim();
+            const mobile = this.querySelector('input[type="tel"]').value.trim();
+            const age = this.querySelector('input[type="number"]').value.trim();
+            const address = this.querySelector('textarea').value.trim();
+
+            // Validate all fields are filled
+            if (!name || !mobile || !age || !address) {
+                alert('Please fill in all the details');
+                return;
+            }
+
+            // Validate name (only alphabets)
+            if (!validateName(name)) {
+                alert('Name should contain only alphabets');
+                return;
+            }
+
+            // Validate mobile (10 digits)
+            if (!validateMobile(mobile)) {
+                alert('Mobile number should be 10 digits');
+                return;
+            }
+
+            // Validate age (1-2 digits)
+            if (!validateAge(age)) {
+                alert('Age should be a valid number (1-99)');
+                return;
+            }
+
+            // Check for duplicate booking
+            const isDuplicate = await checkDuplicateBooking(mobile, deptName);
+            if (isDuplicate.exists) {
+                alert('Appointment is already booked for this number in this department');
+                    return;
+                }
+
+                const formData = {
+                    department: deptName,
+                name,
+                mobile,
+                age: parseInt(age),
+                address,
+                appointmentDate: document.getElementById('available-date').textContent.split(': ')[1]
+                };
+
+                try {
+                const response = await fetch(`${API_URL}/bookings`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    });
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.message || 'Failed to book appointment');
+                }
+
+                const booking = await response.json();
+                alert('Appointment is Confirmed');
+                this.reset();
+                fetchDepartmentDetails(); // Refresh department details
+            } catch (error) {
+                console.error('Booking error:', error);
+                alert(error.message || 'Error booking appointment');
+            }
+        });
+
+        // Add input validation for name (only alphabets)
+        document.querySelector('input[type="text"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^A-Za-z\s]/g, '');
+        });
+
+        // Add input validation for mobile (only numbers, max 10 digits)
+        document.querySelector('input[type="tel"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 10);
+        });
+
+        // Add input validation for age (only numbers, max 2 digits)
+        document.querySelector('input[type="number"]').addEventListener('input', function(e) {
+            this.value = this.value.replace(/\D/g, '').slice(0, 2);
+        });
+
+        // Handle back button
+        document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = 'departments.html';
+        });
+
+        // Initial fetch
+        fetchDepartmentDetails();
+    </script>
+</body>
+</html>

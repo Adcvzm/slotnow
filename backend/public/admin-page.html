@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bookings</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@300;400;500;600&display=swap');
+        
+        :root {
+            --primary-blue: #4dabf7;
+            --light-blue: #f0f7ff;
+            --sky-blue: #74c0fc;
+            --soft-blue: #a5d8ff;
+            --danger-red: #ff8787;
+            --hover-red: #fa5252;
+            --white: #ffffff;
+            --light-gray: #f8fafc;
+            --border-gray: #e2e8f0;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--light-blue);
+            background-image: linear-gradient(to bottom right, #f0f7ff, #e7f5ff);
+            min-height: 100vh;
+            color: #334155;
+        }
+        
+        .header {
+            background-color: var(--white);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+        
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .header h1 {
+            margin: 0;
+            font-family: 'Playfair Display', serif;
+            font-size: 38px;
+            background: linear-gradient(135deg, #4dabf7 0%, #74c0fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.06);
+            position: relative;
+        }
+        
+        .header h1::after {
+            content: "";
+            position: absolute;
+            bottom: -8px;
+            left: 25%;
+            width: 50%;
+            height: 3px;
+            background: linear-gradient(to right, #4dabf7, #a5d8ff);
+            border-radius: 2px;
+        }
+        
+        .logout-btn {
+            background-color: var(--danger-red);
+            color: var(--white);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(244, 63, 94, 0.1);
+        }
+        
+        .logout-btn:hover {
+            background-color: var(--hover-red);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 10px rgba(244, 63, 94, 0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            color: var(--white);
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.08);
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn-primary {
+            background-color: var(--sky-blue);
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-blue);
+        }
+        
+        .btn-danger {
+            background-color: var(--danger-red);
+        }
+        
+        .btn-danger:hover {
+            background-color: var(--hover-red);
+        }
+        
+        .table-container {
+            background-color: var(--white);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .table-container:hover {
+            box-shadow: 0 15px 30px rgba(73, 172, 247, 0.12);
+            transform: translateY(-5px);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 16px;
+            text-align: left;
+        }
+        
+        th {
+            background: linear-gradient(to right, #74c0fc, #a5d8ff);
+            color: #2b4865;
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 14px;
+            letter-spacing: 0.5px;
+        }
+        
+        td {
+            border-bottom: 1px solid var(--border-gray);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        tr:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .checkbox-cell {
+            width: 40px;
+        }
+        
+        .no-data {
+            text-align: center;
+            padding: 20px;
+            color: #64748b;
+            font-style: italic;
+        }
+        
+        @media screen and (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 20px;
+                padding: 15px;
+                text-align: center;
+            }
+            
+            .header h1 {
+                font-size: 32px;
+            }
+            
+            .button-container {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-title">
+            <h1>Bookings</h1>
+        </div>
+        <button class="logout-btn" id="logout-btn">Logout</button>
+    </div>
+    
+    <div class="container">
+        <div class="button-container">
+            <button class="btn btn-primary" id="back-btn">Back</button>
+            <button class="btn btn-danger" id="delete-btn">Delete Selected</button>
+        </div>
+        
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="checkbox-cell"><input type="checkbox" id="select-all"></th>
+                        <th>Department</th>
+                        <th>Patient Name</th>
+                        <th>Age</th>
+                        <th>Address</th>
+                        <th>Mobile</th>
+                        <th>Submitted On</th>
+                        <th>Appointment</th>
+                    </tr>
+                </thead>
+                <tbody id="bookings-table">
+                    <!-- Data will be populated by JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const token = localStorage.getItem('token');
+
+        if (!token) {
+            window.location.href = 'admin-login.html';
+        }
+
+        // Fetch and display bookings
+        async function fetchBookings() {
+            try {
+                const response = await fetch(`${API_URL}/bookings`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('token');
+                        window.location.href = 'admin-login.html';
+                        return;
+                    }
+                    throw new Error('Failed to fetch bookings');
+                }
+
+                const bookings = await response.json();
+                const tbody = document.getElementById('bookings-table');
+                tbody.innerHTML = '';
+
+                bookings.forEach(booking => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td class="checkbox-cell">
+                            <input type="checkbox" class="booking-checkbox" data-id="${booking._id}">
+                        </td>
+                        <td>${booking.department}</td>
+                        <td>${booking.name}</td>
+                        <td>${booking.age}</td>
+                        <td>${booking.address}</td>
+                        <td>${booking.mobile}</td>
+                        <td>${booking.bookingDate}</td>
+                        <td>${booking.appointmentDate}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (error) {
+                console.error('Error fetching bookings:', error);
+                alert('Failed to load bookings');
+            }
+        }
+
+        // Handle delete selected
+        document.getElementById('delete-btn').addEventListener('click', async function() {
+            const checkboxes = document.querySelectorAll('.booking-checkbox:checked');
+            if (checkboxes.length === 0) {
+                alert('Please select bookings to delete');
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to delete ${checkboxes.length} booking(s)?`)) {
+                return;
+            }
+
+            try {
+                const deletePromises = Array.from(checkboxes).map(checkbox => 
+                    fetch(`${API_URL}/bookings/${checkbox.dataset.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    })
+                );
+
+                await Promise.all(deletePromises);
+                await fetchBookings();
+                alert('Selected bookings deleted successfully');
+            } catch (error) {
+                console.error('Error deleting bookings:', error);
+                alert('Failed to delete bookings');
+            }
+        });
+
+        // Handle select all
+        document.getElementById('select-all').addEventListener('change', function() {
+            document.querySelectorAll('.booking-checkbox').forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+        });
+
+        // Handle back button
+        document.getElementById('back-btn').addEventListener('click', function() {
+            window.location.href = 'departments.html';
+        });
+
+        // Handle logout
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.removeItem('token');
+            window.location.href = 'admin-login.html';
+        });
+
+        // Initial fetch
+        fetchBookings();
+    </script>
+</body>
+</html>
