@@ -9,8 +9,14 @@ dotenv.config();
 
 const app = express();
 
+// CORS configuration
+app.use(cors({
+    origin: '*', // Allow all origins
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 
 // Serve static files from the backend/public directory
@@ -29,6 +35,12 @@ mongoose.connect(MONGODB_URI)
         console.error('MongoDB connection error:', err);
         process.exit(1);
     });
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: 'Something went wrong!' });
+});
 
 // API Routes
 app.use('/api/auth', require('./routes/auth'));
