@@ -255,6 +255,7 @@
       const errorDiv = document.getElementById('error-message');
       errorDiv.textContent = message;
       errorDiv.style.display = 'block';
+      console.error('Error:', message);
     }
 
     // Function to hide error message
@@ -267,8 +268,29 @@
     async function loadDepartments() {
       try {
         hideError();
-        const response = await fetch('/api/departments');
+        console.log('Attempting to fetch departments...');
+        
+        // Get the current host
+        const host = window.location.hostname;
+        const port = window.location.port;
+        const protocol = window.location.protocol;
+        const baseUrl = `${protocol}//${host}${port ? ':' + port : ''}`;
+        
+        console.log('API URL:', `${baseUrl}/api/departments`);
+        
+        const response = await fetch(`${baseUrl}/api/departments`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          }
+        });
+        
+        console.log('Response status:', response.status);
+        console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
         const result = await response.json();
+        console.log('Response data:', result);
 
         if (!result.success) {
           throw new Error(result.message || 'Failed to load departments');
@@ -276,14 +298,19 @@
 
         const departmentsContainer = document.getElementById('departments-container');
         departmentsContainer.innerHTML = result.data.map(dept => createDepartmentCard(dept)).join('');
+        
+        console.log('Departments loaded successfully');
       } catch (error) {
         console.error('Error loading departments:', error);
-        showError(error.message || 'Failed to load departments. Please try again.');
+        showError(`Failed to load departments: ${error.message}`);
       }
     }
 
     // Load departments when page loads
-    document.addEventListener('DOMContentLoaded', loadDepartments);
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('Page loaded, initializing...');
+      loadDepartments();
+    });
   </script>
 </body>
 </html>
