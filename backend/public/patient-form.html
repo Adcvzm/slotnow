@@ -293,10 +293,17 @@
         // Fetch department details
         async function fetchDepartmentDetails() {
             try {
-                const response = await fetch(`${API_URL}/departments/${deptName}`);
-                if (!response.ok) throw new Error('Department not found');
+                console.log('Fetching department details for:', deptName);
+                const response = await fetch(`${API_URL}/departments/${encodeURIComponent(deptName)}`);
+                if (!response.ok) {
+                    console.error('Department fetch failed:', response.status);
+                    throw new Error('Department not found');
+                }
                 
                 const department = await response.json();
+                console.log('Department data:', department);
+                
+                // Update UI with department details
                 document.getElementById('available-day').textContent = `Available Day: ${department.availableDay}`;
                 document.getElementById('slots').textContent = `Slots Remaining: ${department.availableSlots}`;
                 
@@ -367,6 +374,9 @@
                 }
             } catch (error) {
                 console.error('Error fetching department details:', error);
+                document.getElementById('available-day').textContent = 'Available Day: Error loading data';
+                document.getElementById('slots').textContent = 'Slots Remaining: Error loading data';
+                document.getElementById('available-date').textContent = 'Available Date: Error loading data';
             }
         }
 
