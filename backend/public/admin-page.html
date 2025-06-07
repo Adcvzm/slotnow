@@ -244,14 +244,15 @@
     </div>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
+        const API_URL = 'https://slotnow-br3f.onrender.com/api';
+        
+        // Check if user is logged in
         const token = localStorage.getItem('token');
-
         if (!token) {
             window.location.href = 'admin-login.html';
         }
 
-        // Fetch and display bookings
+        // Fetch all bookings
         async function fetchBookings() {
             try {
                 const response = await fetch(`${API_URL}/bookings`, {
@@ -259,7 +260,7 @@
                         'Authorization': `Bearer ${token}`
                     }
                 });
-
+                
                 if (!response.ok) {
                     if (response.status === 401) {
                         localStorage.removeItem('token');
@@ -268,81 +269,68 @@
                     }
                     throw new Error('Failed to fetch bookings');
                 }
-
+                
                 const bookings = await response.json();
-                const tbody = document.getElementById('bookings-table');
-                tbody.innerHTML = '';
-
-                bookings.forEach(booking => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td class="checkbox-cell">
-                            <input type="checkbox" class="booking-checkbox" data-id="${booking._id}">
-                        </td>
-                        <td>${booking.department}</td>
-                        <td>${booking.name}</td>
-                        <td>${booking.age}</td>
-                        <td>${booking.address}</td>
-                        <td>${booking.mobile}</td>
-                        <td>${booking.bookingDate}</td>
-                        <td>${booking.appointmentDate}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
+                displayBookings(bookings);
             } catch (error) {
                 console.error('Error fetching bookings:', error);
-                alert('Failed to load bookings');
+                alert('Failed to load bookings. Please try again.');
             }
         }
 
-        // Handle delete selected
-        document.getElementById('delete-btn').addEventListener('click', async function() {
-            const checkboxes = document.querySelectorAll('.booking-checkbox:checked');
-            if (checkboxes.length === 0) {
-                alert('Please select bookings to delete');
-                return;
-            }
-
-            if (!confirm(`Are you sure you want to delete ${checkboxes.length} booking(s)?`)) {
-                return;
-            }
-
-            try {
-                const deletePromises = Array.from(checkboxes).map(checkbox => 
-                    fetch(`${API_URL}/bookings/${checkbox.dataset.id}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Authorization': `Bearer ${token}`
-                        }
-                    })
-                );
-
-                await Promise.all(deletePromises);
-                await fetchBookings();
-                alert('Selected bookings deleted successfully');
-            } catch (error) {
-                console.error('Error deleting bookings:', error);
-                alert('Failed to delete bookings');
-            }
-        });
-
-        // Handle select all
-        document.getElementById('select-all').addEventListener('change', function() {
-            document.querySelectorAll('.booking-checkbox').forEach(checkbox => {
-                checkbox.checked = this.checked;
+        // Display bookings in the table
+        function displayBookings(bookings) {
+            const tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+            
+            bookings.forEach(booking => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${booking.name}</td>
+                    <td>${booking.mobile}</td>
+                    <td>${booking.age}</td>
+                    <td>${booking.department}</td>
+                    <td>${booking.appointmentDate}</td>
+                    <td>${booking.bookingDate}</td>
+                    <td>${booking.bookingTime}</td>
+                    <td>
+                        <button onclick="deleteBooking('${booking._id}')" class="delete-btn">Delete</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
             });
-        });
+        }
 
-        // Handle back button
-        document.getElementById('back-btn').addEventListener('click', function() {
-            window.location.href = 'departments.html';
-        });
+        // Delete booking
+        async function deleteBooking(id) {
+            if (!confirm('Are you sure you want to delete this booking?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`${API_URL}/bookings/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to delete booking');
+                }
+                
+                fetchBookings(); // Refresh the list
+            } catch (error) {
+                console.error('Error deleting booking:', error);
+                alert('Failed to delete booking. Please try again.');
+            }
+        }
 
-        // Handle logout
-        document.getElementById('logout-btn').addEventListener('click', function() {
+        // Logout function
+        function logout() {
             localStorage.removeItem('token');
             window.location.href = 'admin-login.html';
-        });
+        }
 
         // Initial fetch
         fetchBookings();
