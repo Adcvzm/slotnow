@@ -50,6 +50,8 @@ const connectWithRetry = async () => {
             useUnifiedTopology: true,
             serverSelectionTimeoutMS: 5000,
             socketTimeoutMS: 45000,
+            retryWrites: true,
+            w: 'majority'
         });
         console.log('Connected to MongoDB Atlas successfully');
         console.log('Database:', mongoose.connection.db.databaseName);
@@ -62,29 +64,19 @@ const connectWithRetry = async () => {
 
 connectWithRetry();
 
-// Global error handling middleware
-app.use((err, req, res, next) => {
-    console.error('Error:', err.stack);
-    const statusCode = err.statusCode || 500;
-    res.status(statusCode).json({ 
-        success: false,
-        message: err.message || 'Something went wrong!',
-        error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+// Health check endpoint
+app.get('/api/health', (req, res) => {
+    res.json({ 
+        status: 'ok',
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime(),
+        mongodb: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
     });
 });
 
 // API Routes
 console.log('Setting up API routes...');
 const routesPath = path.join(__dirname, 'routes');
-
-// Health check endpoint
-app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'ok',
-        timestamp: new Date().toISOString(),
-        uptime: process.uptime()
-    });
-});
 
 app.use('/api/auth', require(path.join(routesPath, 'auth')));
 app.use('/api/bookings', require(path.join(routesPath, 'bookings')));
@@ -106,9 +98,20 @@ app.use((req, res) => {
     });
 });
 
+// Global error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err.stack);
+    const statusCode = err.statusCode || 500;
+    res.status(statusCode).json({ 
+        success: false,
+        message: err.message || 'Something went wrong!',
+        error: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
+});
+
 // Use Render's port or default to 3000
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
     console.log('Environment:', process.env.NODE_ENV || 'development');
     console.log('API URL:', `http://localhost:${PORT}/api`);
