@@ -248,14 +248,11 @@
         <div class="info-section">
             <h1 id="department-name">Department</h1>
             <div class="info-box">
-                <p id="available-day"><strong>Available Day:</strong> Loading...</p>
-                <p id="slots"><strong>Slots Remaining:</strong> Loading...</p>
-                <p id="available-date"><strong>Available Date:</strong> Loading...</p>
+                <p id="department-info">Loading department information...</p>
             </div>
         </div>
-        
         <div class="form-section">
-            <h2>Book Appointment</h2>
+            <h2>Book Your Appointment</h2>
             <form id="appointment-form">
                 <div class="form-group">
                     <input type="text" class="form-control" placeholder="Enter Full name" required>
@@ -285,100 +282,61 @@
     <script>
         const API_URL = 'https://slotnow-br3f.onrender.com/api';
 
-        // Get department details from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const deptName = decodeURIComponent(urlParams.get('dept') || 'Department');
-        document.getElementById('department-name').textContent = deptName;
+        // Function to get URL parameters
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
 
-        // Fetch department details
-        async function fetchDepartmentDetails() {
+        // Function to show error message
+        function showError(message) {
+            const infoBox = document.querySelector('.info-box');
+            infoBox.innerHTML = `<p style="color: #d32f2f;">${message}</p>`;
+        }
+
+        // Function to update department info
+        function updateDepartmentInfo(department) {
+            document.getElementById('department-name').textContent = department.name;
+            const infoBox = document.querySelector('.info-box');
+            infoBox.innerHTML = `
+                <p>Available Slots: ${department.availableSlots || 0}</p>
+                <p>Next Available Date: ${department.nextAvailableDate || 'Not scheduled'}</p>
+            `;
+        }
+
+        // Function to load department details
+        async function loadDepartmentDetails() {
+            const departmentName = getUrlParameter('dept');
+            if (!departmentName) {
+                showError('No department selected. Please go back and select a department.');
+                return;
+            }
+
             try {
-                console.log('Fetching department details for:', deptName);
-                const response = await fetch(`${API_URL}/departments/${encodeURIComponent(deptName)}`);
-                if (!response.ok) {
-                    console.error('Department fetch failed:', response.status);
-                    throw new Error('Department not found');
-                }
-                
-                const department = await response.json();
-                console.log('Department data:', department);
-                
-                // Update UI with department details
-                document.getElementById('available-day').textContent = `Available Day: ${department.availableDay}`;
-                document.getElementById('slots').textContent = `Slots Remaining: ${department.availableSlots}`;
-                
-                // Calculate next available date based on department rules
-                const today = new Date();
-                const currentDay = today.getDay();
-                const targetDay = getDayNumber(department.availableDay);
-                let nextAvailableDate = new Date(today);
-                const submitBtn = document.getElementById('submit-btn');
+                const response = await fetch(`${API_URL}/departments/${encodeURIComponent(departmentName)}`);
+                const result = await response.json();
 
-                // Handle department-specific rules
-                if (department.name === 'Neurosurgeon') {
-                    // Neurosurgeon: Wednesday
-                    if (currentDay === 3) { // Wednesday
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Booking Not Allowed Today';
-                        nextAvailableDate = getNextWeekDay(today, targetDay);
-                    } else {
-                        nextAvailableDate = getNextWeekDay(today, targetDay);
-                    }
-                } else if (department.name === 'Neurophysician') {
-                    // Neurophysician: Friday
-                    if (currentDay === 5) { // Friday
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Booking Not Allowed Today';
-                        nextAvailableDate = getNextWeekDay(today, targetDay);
-                    } else {
-                        nextAvailableDate = getNextWeekDay(today, targetDay);
-                    }
-                } else if (department.name === 'Cardiology') {
-                    // Cardiology: Tuesday
-                    if (currentDay === 2) { // Tuesday
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Booking Not Allowed Today';
-                    }
-                    nextAvailableDate = getNextWeekDay(today, targetDay);
-                } else if (department.name === 'Pediatric Cardiology') {
-                    // Pediatric Cardiology: Friday
-                    if (currentDay === 5) { // Friday
-                        submitBtn.disabled = true;
-                        submitBtn.textContent = 'Booking Not Allowed Today';
-                        nextAvailableDate = getNextWeekDay(today, targetDay);
-                    } else {
-                        nextAvailableDate = getNextWeekDay(today, targetDay);
-                    }
+                if (!result.success) {
+                    throw new Error(result.message || 'Failed to load department details');
                 }
 
-                const formattedDate = nextAvailableDate.toLocaleDateString('en-US', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                document.getElementById('available-date').textContent = `Available Date: ${formattedDate}`;
-
-                // Disable submit button if no slots available
-                if (department.availableSlots <= 0) {
-                    submitBtn.disabled = true;
-                    submitBtn.textContent = 'Slots are not Available';
-                    
-                    // Calculate time until next available date
-                    const timeUntilNextDate = nextAvailableDate.getTime() - today.getTime();
-                    if (timeUntilNextDate > 0) {
-                        // Reload only after the next available date
-                        setTimeout(fetchDepartmentDetails, timeUntilNextDate);
-                    }
-                } else if (!submitBtn.disabled) {
-                    submitBtn.textContent = 'Book Appointment';
-                }
+                updateDepartmentInfo(result.data);
             } catch (error) {
-                console.error('Error fetching department details:', error);
-                document.getElementById('available-day').textContent = 'Available Day: Error loading data';
-                document.getElementById('slots').textContent = 'Slots Remaining: Error loading data';
-                document.getElementById('available-date').textContent = 'Available Date: Error loading data';
+                console.error('Error loading department details:', error);
+                showError(error.message || 'Failed to load department details. Please try again.');
             }
         }
+
+        // Load department details when page loads
+        document.addEventListener('DOMContentLoaded', loadDepartmentDetails);
+
+        // Handle form submission
+        document.getElementById('appointment-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            // Add your form submission logic here
+        });
 
         // Helper function to get day number (0-6)
         function getDayNumber(dayName) {
@@ -453,7 +411,7 @@
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ mobile, department: deptName })
+                    body: JSON.stringify({ mobile, department: document.getElementById('department-name').textContent })
                 });
 
                 if (!duplicateResponse.ok) {
@@ -469,12 +427,12 @@
                 }
 
                 const formData = {
-                    department: deptName,
+                    department: document.getElementById('department-name').textContent,
                     name,
                     mobile,
                     age: parseInt(age),
                     address,
-                    appointmentDate: document.getElementById('available-date').textContent.split(': ')[1]
+                    appointmentDate: document.getElementById('department-info').textContent.split(': ')[1]
                 };
 
                 console.log('Submitting booking data:', formData);
@@ -496,7 +454,7 @@
                 console.log('Booking successful:', booking);
                 alert('Appointment is Confirmed');
                 this.reset();
-                fetchDepartmentDetails(); // Refresh department details
+                loadDepartmentDetails(); // Refresh department details
             } catch (error) {
                 console.error('Booking error:', error);
                 alert(error.message || 'Error booking appointment. Please try again.');
@@ -522,9 +480,6 @@
         document.getElementById('back-btn').addEventListener('click', function() {
             window.location.href = 'departments.html';
         });
-
-        // Initial fetch
-        fetchDepartmentDetails();
     </script>
 </body>
 </html>
