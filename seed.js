@@ -6,7 +6,8 @@ require('dotenv').config();
 // Log environment variables (without sensitive data)
 console.log('Environment variables loaded:', {
     MONGODB_URI_EXISTS: !!process.env.MONGODB_URI,
-    MONGODB_URI_STARTS_WITH: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + '...' : 'not set'
+    MONGODB_URI_STARTS_WITH: process.env.MONGODB_URI ? process.env.MONGODB_URI.substring(0, 20) + '...' : 'not set',
+    NODE_ENV: process.env.NODE_ENV || 'development'
 });
 
 // Sample department data
@@ -79,8 +80,12 @@ async function seed() {
 
         // Connect to MongoDB
         console.log('Attempting to connect to MongoDB...');
-        await mongoose.connect(process.env.MONGODB_URI);
+        await mongoose.connect(process.env.MONGODB_URI, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        });
         console.log('Connected to MongoDB successfully');
+        console.log('Database name:', mongoose.connection.db.databaseName);
 
         // Clear existing data
         console.log('Clearing existing data...');
@@ -103,6 +108,11 @@ async function seed() {
             availableSlots: dept.availableSlots
         })));
 
+        // Verify departments were created
+        const verifyDepartments = await Department.find();
+        console.log('Verification - Total departments in database:', verifyDepartments.length);
+        console.log('Department names:', verifyDepartments.map(d => d.name));
+
         console.log('Database seeded successfully');
         process.exit(0);
     } catch (error) {
@@ -111,8 +121,16 @@ async function seed() {
             console.error('Please check your MongoDB connection string format in .env file');
             console.error('The connection string should look like: mongodb+srv://username:password@cluster.mongodb.net/database');
         }
+        if (error.name === 'MongoServerError') {
+            console.error('MongoDB server error:', error.message);
+        }
+        if (error.name === 'ValidationError') {
+            console.error('Validation error:', error.message);
+        }
         process.exit(1);
     }
 }
 
+// Run seed function
+console.log('Starting database seeding...');
 seed();
