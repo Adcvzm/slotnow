@@ -399,23 +399,6 @@
             return /^\d{1,2}$/.test(age) && parseInt(age) > 0;
         }
 
-        // Check for duplicate bookings
-        async function checkDuplicateBooking(mobile, department) {
-            try {
-                const response = await fetch(`${API_URL}/bookings/check-duplicate`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ mobile, department })
-                });
-                return await response.json();
-            } catch (error) {
-                console.error('Error checking duplicate:', error);
-                return false;
-            }
-        }
-
         // Handle form submission
         document.getElementById('appointment-form').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -452,43 +435,61 @@
                 return;
             }
 
-            // Check for duplicate booking
-            const isDuplicate = await checkDuplicateBooking(mobile, deptName);
-            if (isDuplicate.exists) {
-                alert('Appointment is already booked for this number in this department');
+            try {
+                // Check for duplicate booking
+                console.log('Checking for duplicate booking...');
+                const duplicateResponse = await fetch(`${API_URL}/bookings/check-duplicate`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ mobile, department: deptName })
+                });
+
+                if (!duplicateResponse.ok) {
+                    throw new Error('Failed to check duplicate booking');
+                }
+
+                const isDuplicate = await duplicateResponse.json();
+                console.log('Duplicate check result:', isDuplicate);
+
+                if (isDuplicate.exists) {
+                    alert('Appointment is already booked for this number in this department');
                     return;
                 }
 
                 const formData = {
                     department: deptName,
-                name,
-                mobile,
-                age: parseInt(age),
-                address,
-                appointmentDate: document.getElementById('available-date').textContent.split(': ')[1]
+                    name,
+                    mobile,
+                    age: parseInt(age),
+                    address,
+                    appointmentDate: document.getElementById('available-date').textContent.split(': ')[1]
                 };
 
-                try {
+                console.log('Submitting booking data:', formData);
                 const response = await fetch(`${API_URL}/bookings`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
 
+                console.log('Response status:', response.status);
                 if (!response.ok) {
                     const error = await response.json();
                     throw new Error(error.message || 'Failed to book appointment');
                 }
 
                 const booking = await response.json();
+                console.log('Booking successful:', booking);
                 alert('Appointment is Confirmed');
                 this.reset();
                 fetchDepartmentDetails(); // Refresh department details
             } catch (error) {
                 console.error('Booking error:', error);
-                alert(error.message || 'Error booking appointment');
+                alert(error.message || 'Error booking appointment. Please try again.');
             }
         });
 
