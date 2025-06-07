@@ -248,7 +248,7 @@
                 
                 <div class="form-group">
                     <label for="password">Password:</label>
-                    <input type="password" id="password" placeholder="" required>
+                    <input type="password" id="password" placeholder="Enter your password" required>
                 </div>
                 
                 <button type="submit" class="login-btn">Login</button>
@@ -258,34 +258,32 @@
     </main>
 
     <script>
-        const API_URL = 'http://localhost:5000/api';
-
+        const API_URL = 'https://slotnow-br3f.onrender.com/api';
+        
         document.getElementById('admin-login-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const username = this.querySelector('#username').value;
-            const password = this.querySelector('#password').value;
-
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
             try {
                 const response = await fetch(`${API_URL}/auth/login`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ email: username, password })
+                    body: JSON.stringify({ username, password })
                 });
-
+                
                 if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.message || 'Login failed');
+                    throw new Error('Invalid credentials');
                 }
-
+                
                 const data = await response.json();
                 localStorage.setItem('token', data.token);
                 window.location.href = 'admin-page.html';
             } catch (error) {
-                console.error('Login error:', error);
-                alert(error.message || 'Login failed. Please check your credentials.');
+                alert(error.message || 'Login failed. Please try again.');
             }
         });
     </script>
