@@ -287,8 +287,8 @@
 
         // Get department details from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const deptName = urlParams.get('dept') || 'Department';
-        document.getElementById('department-name').textContent = deptName.replace(/%20/g, ' ');
+        const deptName = decodeURIComponent(urlParams.get('dept') || 'Department');
+        document.getElementById('department-name').textContent = deptName;
 
         // Fetch department details
         async function fetchDepartmentDetails() {
