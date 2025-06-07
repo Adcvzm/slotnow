@@ -268,9 +268,13 @@
     function getApiUrl() {
       // Check if we're on Render
       if (window.location.hostname.includes('render.com')) {
-        return 'https://slotnow-br3f.onrender.com/api';
+        return 'https://slotnow-i8fs.onrender.com/api';
       }
-      // Local development
+      // Check if we're on localhost
+      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        return 'http://localhost:3000/api';
+      }
+      // Default to relative path
       return '/api';
     }
 
@@ -283,13 +287,24 @@
         const apiUrl = getApiUrl();
         console.log('API URL:', `${apiUrl}/departments`);
         
+        // First try to check if the API is accessible
+        try {
+          const healthCheck = await fetch(`${apiUrl}/health`);
+          if (!healthCheck.ok) {
+            throw new Error('API health check failed');
+          }
+          console.log('API health check passed');
+        } catch (error) {
+          console.error('API health check failed:', error);
+          throw new Error('API server is not responding. Please try again later.');
+        }
+        
         const response = await fetch(`${apiUrl}/departments`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-          },
-          credentials: 'include'
+          }
         });
         
         console.log('Response status:', response.status);
@@ -312,7 +327,17 @@
         console.log('Departments loaded successfully');
       } catch (error) {
         console.error('Error loading departments:', error);
-        showError(`Failed to load departments: ${error.message}`);
+        let errorMessage = 'Failed to load departments';
+        
+        if (error.message.includes('Failed to fetch')) {
+          errorMessage = 'Unable to connect to the server. Please check your internet connection and try again.';
+        } else if (error.message.includes('API server is not responding')) {
+          errorMessage = 'The server is currently unavailable. Please try again later.';
+        } else {
+          errorMessage = error.message;
+        }
+        
+        showError(errorMessage);
       }
     }
 
