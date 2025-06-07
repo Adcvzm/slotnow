@@ -13,7 +13,7 @@ console.log('Environment variables loaded:', {
 const departments = [
     {
         name: 'Neurosurgeon',
-        availableDay: 'Wednesday',
+        availableDay: 'WEDNESDAY',
         totalSlots: 10,
         availableSlots: 10,
         nextAvailableDate: new Date().toLocaleDateString('en-US', {
@@ -24,7 +24,7 @@ const departments = [
     },
     {
         name: 'Neurophysician',
-        availableDay: 'Friday',
+        availableDay: 'FRIDAY',
         totalSlots: 20,
         availableSlots: 20,
         nextAvailableDate: new Date().toLocaleDateString('en-US', {
@@ -35,7 +35,7 @@ const departments = [
     },
     {
         name: 'Cardiology',
-        availableDay: 'Tuesday',
+        availableDay: 'TUESDAY',
         totalSlots: 70,
         availableSlots: 70,
         nextAvailableDate: new Date().toLocaleDateString('en-US', {
@@ -46,7 +46,7 @@ const departments = [
     },
     {
         name: 'Pediatric Cardiology',
-        availableDay: 'Friday',
+        availableDay: 'FRIDAY',
         totalSlots: 10,
         availableSlots: 10,
         nextAvailableDate: new Date().toLocaleDateString('en-US', {
@@ -86,15 +86,22 @@ async function seed() {
         console.log('Clearing existing data...');
         await User.deleteMany({});
         await Department.deleteMany({});
+        console.log('Existing data cleared successfully');
 
         // Insert admin user
         console.log('Creating admin user...');
         const user = new User(adminUser);
         await user.save();
+        console.log('Admin user created successfully');
 
         // Insert departments
         console.log('Creating departments...');
-        await Department.insertMany(departments);
+        const createdDepartments = await Department.insertMany(departments);
+        console.log('Departments created successfully:', createdDepartments.map(dept => ({
+            name: dept.name,
+            availableDay: dept.availableDay,
+            availableSlots: dept.availableSlots
+        })));
 
         console.log('Database seeded successfully');
         process.exit(0);
