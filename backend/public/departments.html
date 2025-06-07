@@ -264,30 +264,40 @@
       errorDiv.style.display = 'none';
     }
 
+    // Function to get API URL
+    function getApiUrl() {
+      // Check if we're on Render
+      if (window.location.hostname.includes('render.com')) {
+        return 'https://slotnow-br3f.onrender.com/api';
+      }
+      // Local development
+      return '/api';
+    }
+
     // Function to load departments
     async function loadDepartments() {
       try {
         hideError();
         console.log('Attempting to fetch departments...');
         
-        // Get the current host
-        const host = window.location.hostname;
-        const port = window.location.port;
-        const protocol = window.location.protocol;
-        const baseUrl = `${protocol}//${host}${port ? ':' + port : ''}`;
+        const apiUrl = getApiUrl();
+        console.log('API URL:', `${apiUrl}/departments`);
         
-        console.log('API URL:', `${baseUrl}/api/departments`);
-        
-        const response = await fetch(`${baseUrl}/api/departments`, {
+        const response = await fetch(`${apiUrl}/departments`, {
           method: 'GET',
           headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
-          }
+          },
+          credentials: 'include'
         });
         
         console.log('Response status:', response.status);
         console.log('Response headers:', Object.fromEntries(response.headers.entries()));
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         
         const result = await response.json();
         console.log('Response data:', result);
